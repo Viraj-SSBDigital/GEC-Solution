@@ -9,8 +9,11 @@ import {
   Activity,
   Users,
   BarChart3,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTheme } from "../theme/ThemeProvider";
 
 interface LayoutProps {
   children: ReactNode;
@@ -18,8 +21,9 @@ interface LayoutProps {
 
 export const Layout = ({ children }: LayoutProps) => {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme(); // <--- theme hook
   const navigate = useNavigate();
-  const location = useLocation(); // <--- Get current route
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
@@ -64,10 +68,11 @@ export const Layout = ({ children }: LayoutProps) => {
   const navItems = getNavItems();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
-      <nav className="border-b border-slate-800 bg-slate-950/50 backdrop-blur-xl">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 dark:bg-slate-900 transition-colors">
+      <nav className="border-b border-slate-800 bg-slate-950/50 backdrop-blur-xl dark:bg-slate-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
+            {/* Left nav */}
             <div className="flex items-center space-x-8">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
@@ -80,8 +85,7 @@ export const Layout = ({ children }: LayoutProps) => {
 
               <div className="hidden md:flex space-x-4">
                 {navItems.map((item, index) => {
-                  const isActive = location.pathname === item.path; // <--- Check active route
-
+                  const isActive = location.pathname === item.path;
                   return (
                     <motion.button
                       key={item.path}
@@ -104,13 +108,27 @@ export const Layout = ({ children }: LayoutProps) => {
               </div>
             </div>
 
+            {/* Right actions */}
             <div className="flex items-center space-x-4">
-              <div className="text-right">
+              {/* Theme Switch */}
+              <button
+                onClick={toggleTheme}
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-800/50 text-white hover:bg-slate-700 transition-colors"
+              >
+                {theme === "light" ? (
+                  <Moon className="w-5 h-5" />
+                ) : (
+                  <Sun className="w-5 h-5" />
+                )}
+              </button>
+
+              <div className="text-right hidden sm:block">
                 <p className="text-sm font-medium text-white">{user?.name}</p>
                 <p className="text-xs text-slate-400 capitalize">
                   {user?.role}
                 </p>
               </div>
+
               <button
                 onClick={handleLogout}
                 className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all"

@@ -13,6 +13,7 @@ import { AdminDashboard } from "./pages/admin/Dashboard";
 import { AdminGenerators } from "./pages/admin/Generators";
 import { AdminLedger } from "./pages/admin/Ledger";
 import { AdminReports } from "./pages/admin/Reports";
+import { ThemeProvider } from "./theme/ThemeProvider";
 
 const PrivateRoute = ({
   children,
@@ -147,7 +148,9 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <DataProvider>
-          <AppRoutes />
+          <ThemeProvider>
+            <AppRoutes />
+          </ThemeProvider>
         </DataProvider>
       </AuthProvider>
     </BrowserRouter>
