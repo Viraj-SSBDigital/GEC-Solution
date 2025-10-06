@@ -2,11 +2,9 @@ import { Generator, GreenToken, GreenEnergyCertificate, EnergyData, AllocationLo
 import { generateHash } from './crypto';
 
 export const mockUsers: User[] = [
-  { id: 'U001', name: 'John Consumer', email: 'viraj@gmail.com', role: 'consumer' },
-  { id: 'U002', name: 'Sarah Green', email: 'viraj1@gmail.com', role: 'consumer' },
-  { id: 'U003', name: 'SolarTech Inc', email: 'viraj@gmail.com', role: 'generator' },
-  { id: 'U004', name: 'WindPower Ltd', email: 'viraj@gmail.com', role: 'generator' },
-  { id: 'U005', name: 'Admin User', email: 'viraj@gmail.com', role: 'admin' },
+  { id: 'U001', name: 'Consumer User', email: 'consumer@example.com', role: 'consumer' },
+  { id: 'U004', name: 'WindPower Ltd', email: 'generator@example.com', role: 'generator' },
+  { id: 'U005', name: 'Admin User', email: 'admin@example.com', role: 'admin' },
 ];
 
 export const mockGenerators: Generator[] = [

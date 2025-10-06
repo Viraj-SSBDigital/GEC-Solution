@@ -26,8 +26,8 @@ export const Login = () => {
   };
 
   const quickLogins = [
-    { email: 'john@example.com', role: 'consumer' as UserRole, name: 'Consumer Demo' },
-    { email: 'solar@example.com', role: 'generator' as UserRole, name: 'Generator Demo' },
+    { email: 'consumer@example.com', role: 'consumer' as UserRole, name: 'Consumer Demo' },
+    { email: 'generator@example.com', role: 'generator' as UserRole, name: 'Generator Demo' },
     { email: 'admin@example.com', role: 'admin' as UserRole, name: 'Admin Demo' },
   ];
 
