@@ -1,8 +1,16 @@
-import { ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { Zap, LogOut, Home, FileText, Activity, Settings, Users, BarChart3 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ReactNode } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  Zap,
+  LogOut,
+  Home,
+  FileText,
+  Activity,
+  Users,
+  BarChart3,
+} from "lucide-react";
+import { motion } from "framer-motion";
 
 interface LayoutProps {
   children: ReactNode;
@@ -11,33 +19,42 @@ interface LayoutProps {
 export const Layout = ({ children }: LayoutProps) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation(); // <--- Get current route
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   const getNavItems = () => {
     switch (user?.role) {
-      case 'consumer':
+      case "consumer":
         return [
-          { icon: Home, label: 'Dashboard', path: '/consumer' },
-          { icon: FileText, label: 'Certificates', path: '/consumer/certificates' },
-          { icon: Activity, label: 'Wallet', path: '/consumer/wallet' },
-          { icon: BarChart3, label: 'Analytics', path: '/consumer/analytics' },
+          { icon: Home, label: "Dashboard", path: "/consumer" },
+          {
+            icon: FileText,
+            label: "Certificates",
+            path: "/consumer/certificates",
+          },
+          { icon: Activity, label: "Wallet", path: "/consumer/wallet" },
+          { icon: BarChart3, label: "Analytics", path: "/consumer/analytics" },
         ];
-      case 'generator':
+      case "generator":
         return [
-          { icon: Home, label: 'Dashboard', path: '/generator' },
-          { icon: Activity, label: 'Tokens', path: '/generator/tokens' },
-          { icon: BarChart3, label: 'Performance', path: '/generator/performance' },
+          { icon: Home, label: "Dashboard", path: "/generator" },
+          { icon: Activity, label: "Tokens", path: "/generator/tokens" },
+          {
+            icon: BarChart3,
+            label: "Performance",
+            path: "/generator/performance",
+          },
         ];
-      case 'admin':
+      case "admin":
         return [
-          { icon: Home, label: 'Dashboard', path: '/admin' },
-          { icon: Users, label: 'Generators', path: '/admin/generators' },
-          { icon: Activity, label: 'Ledger', path: '/admin/ledger' },
-          { icon: BarChart3, label: 'Reports', path: '/admin/reports' },
+          { icon: Home, label: "Dashboard", path: "/admin" },
+          { icon: Users, label: "Generators", path: "/admin/generators" },
+          { icon: Activity, label: "Ledger", path: "/admin/ledger" },
+          { icon: BarChart3, label: "Reports", path: "/admin/reports" },
         ];
       default:
         return [];
@@ -62,26 +79,37 @@ export const Layout = ({ children }: LayoutProps) => {
               </motion.div>
 
               <div className="hidden md:flex space-x-4">
-                {navItems.map((item, index) => (
-                  <motion.button
-                    key={item.path}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    onClick={() => navigate(item.path)}
-                    className="flex items-center space-x-2 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all"
-                  >
-                    <item.icon className="w-4 h-4" />
-                    <span>{item.label}</span>
-                  </motion.button>
-                ))}
+                {navItems.map((item, index) => {
+                  const isActive = location.pathname === item.path; // <--- Check active route
+
+                  return (
+                    <motion.button
+                      key={item.path}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      onClick={() => navigate(item.path)}
+                      className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all
+                        ${
+                          isActive
+                            ? "bg-emerald-500 text-white"
+                            : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+                        }`}
+                    >
+                      <item.icon className="w-4 h-4" />
+                      <span>{item.label}</span>
+                    </motion.button>
+                  );
+                })}
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
               <div className="text-right">
                 <p className="text-sm font-medium text-white">{user?.name}</p>
-                <p className="text-xs text-slate-400 capitalize">{user?.role}</p>
+                <p className="text-xs text-slate-400 capitalize">
+                  {user?.role}
+                </p>
               </div>
               <button
                 onClick={handleLogout}

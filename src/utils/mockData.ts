@@ -202,7 +202,7 @@ export const generateMockBlockchain = (tokens: GreenToken[], certificates: Green
     }
   });
 
-  certificates.forEach((cert, index) => {
+  certificates.forEach((cert) => {
     const hash = generateHash({ previousHash, type: 'gec_issuance', data: cert });
     transactions.push({
       id: `BLK${String(transactions.length + 1).padStart(6, '0')}`,
