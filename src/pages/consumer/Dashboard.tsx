@@ -1,0 +1,175 @@
+import { useData } from '../../contexts/DataContext';
+import { useAuth } from '../../contexts/AuthContext';
+import { Layout } from '../../components/Layout';
+import { StatCard } from '../../components/Card';
+import { Card } from '../../components/Card';
+import { Zap, Award, Leaf, TrendingUp } from 'lucide-react';
+import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { calculateSustainabilityMetrics, calculateEnergyMix, formatEnergy, formatCO2, getSourceColor } from '../../utils/calculations';
+
+export const ConsumerDashboard = () => {
+  const { tokens, certificates, energyData } = useData();
+  const { user } = useAuth();
+
+  const userCertificates = certificates.filter(c => c.consumerId === user?.id);
+  const userTokens = tokens.filter(t => t.consumerId === user?.id);
+
+  const totalConsumption = energyData.reduce((sum, d) => sum + d.consumption, 0);
+  const metrics = calculateSustainabilityMetrics(userCertificates, totalConsumption);
+  const energyMix = calculateEnergyMix(userTokens);
+
+  const chartData = energyData.slice(-24).map(d => ({
+    time: new Date(d.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    green: d.greenGeneration,
+    total: d.generation,
+  }));
+
+  const pieData = energyMix.map(item => ({
+    name: item.source,
+    value: item.units,
+    color: getSourceColor(item.source),
+  }));
+
+  return (
+    <Layout>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Energy Dashboard</h1>
+          <p className="text-slate-400">Track your green energy consumption and impact</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard
+            icon={<Zap className="w-8 h-8" />}
+            label="Green Energy Used"
+            value={formatEnergy(metrics.totalGreenEnergy)}
+            trend={{ value: 12.5, positive: true }}
+            color="emerald"
+          />
+          <StatCard
+            icon={<Award className="w-8 h-8" />}
+            label="Certificates Earned"
+            value={metrics.certificatesEarned}
+            trend={{ value: 8.3, positive: true }}
+            color="blue"
+          />
+          <StatCard
+            icon={<Leaf className="w-8 h-8" />}
+            label="CO₂ Offset"
+            value={formatCO2(metrics.co2Saved)}
+            trend={{ value: 15.7, positive: true }}
+            color="cyan"
+          />
+          <StatCard
+            icon={<TrendingUp className="w-8 h-8" />}
+            label="Green Percentage"
+            value={`${metrics.greenPercentage.toFixed(1)}%`}
+            trend={{ value: 5.2, positive: true }}
+            color="amber"
+          />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card>
+            <h3 className="text-xl font-bold text-white mb-4">Energy Generation (24h)</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                <XAxis dataKey="time" stroke="#94a3b8" />
+                <YAxis stroke="#94a3b8" />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#1e293b',
+                    border: '1px solid #334155',
+                    borderRadius: '8px',
+                  }}
+                />
+                <Legend />
+                <Line type="monotone" dataKey="green" stroke="#10b981" strokeWidth={2} name="Green Energy" />
+                <Line type="monotone" dataKey="total" stroke="#3b82f6" strokeWidth={2} name="Total Energy" />
+              </LineChart>
+            </ResponsiveContainer>
+          </Card>
+
+          <Card>
+            <h3 className="text-xl font-bold text-white mb-4">Energy Mix</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: '#1e293b',
+                    border: '1px solid #334155',
+                    borderRadius: '8px',
+                  }}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </Card>
+        </div>
+
+        <Card className="bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border-emerald-500/30">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-xl font-bold text-white mb-2">Environmental Impact</h3>
+              <p className="text-slate-400 mb-4">Your contribution to a sustainable future</p>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-emerald-400 text-sm mb-1">Trees Equivalent</p>
+                  <p className="text-2xl font-bold text-white">{metrics.treesEquivalent}</p>
+                </div>
+                <div>
+                  <p className="text-cyan-400 text-sm mb-1">Clean Energy %</p>
+                  <p className="text-2xl font-bold text-white">{metrics.greenPercentage.toFixed(1)}%</p>
+                </div>
+              </div>
+            </div>
+            <Leaf className="w-24 h-24 text-emerald-400/20" />
+          </div>
+        </Card>
+
+        <Card>
+          <h3 className="text-xl font-bold text-white mb-4">Recent Activity</h3>
+          <div className="space-y-3">
+            {userTokens.slice(0, 5).map((token) => (
+              <div
+                key={token.id}
+                className="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg"
+              >
+                <div className="flex items-center space-x-3">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: getSourceColor(token.source) }}
+                  />
+                  <div>
+                    <p className="text-white font-medium">{token.generatorName}</p>
+                    <p className="text-slate-400 text-sm">
+                      {new Date(token.timestamp).toLocaleString()}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-white font-semibold">{formatEnergy(token.units)}</p>
+                  <p className="text-emerald-400 text-sm capitalize">{token.source}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+    </Layout>
+  );
+};
