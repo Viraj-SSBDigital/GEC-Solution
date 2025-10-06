@@ -1,30 +1,59 @@
-import { useData } from '../../contexts/DataContext';
-import { useAuth } from '../../contexts/AuthContext';
-import { Layout } from '../../components/Layout';
-import { StatCard } from '../../components/Card';
-import { Card } from '../../components/Card';
-import { Zap, Award, Leaf, TrendingUp } from 'lucide-react';
-import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { calculateSustainabilityMetrics, calculateEnergyMix, formatEnergy, formatCO2, getSourceColor } from '../../utils/calculations';
+import { useData } from "../../contexts/DataContext";
+import { useAuth } from "../../contexts/AuthContext";
+import { Layout } from "../../components/Layout";
+import { StatCard } from "../../components/Card";
+import { Card } from "../../components/Card";
+import { Zap, Award, Leaf, TrendingUp } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import {
+  calculateSustainabilityMetrics,
+  calculateEnergyMix,
+  formatEnergy,
+  formatCO2,
+  getSourceColor,
+} from "../../utils/calculations";
 
 export const ConsumerDashboard = () => {
   const { tokens, certificates, energyData } = useData();
   const { user } = useAuth();
 
-  const userCertificates = certificates.filter(c => c.consumerId === user?.id);
-  const userTokens = tokens.filter(t => t.consumerId === user?.id);
+  const userCertificates = certificates.filter(
+    (c) => c.consumerId === user?.id
+  );
+  const userTokens = tokens.filter((t) => t.consumerId === user?.id);
 
-  const totalConsumption = energyData.reduce((sum, d) => sum + d.consumption, 0);
-  const metrics = calculateSustainabilityMetrics(userCertificates, totalConsumption);
+  const totalConsumption = energyData.reduce(
+    (sum, d) => sum + d.consumption,
+    0
+  );
+  const metrics = calculateSustainabilityMetrics(
+    userCertificates,
+    totalConsumption
+  );
   const energyMix = calculateEnergyMix(userTokens);
 
-  const chartData = energyData.slice(-24).map(d => ({
-    time: new Date(d.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+  const chartData = energyData.slice(-24).map((d) => ({
+    time: new Date(d.timestamp).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
     green: d.greenGeneration,
     total: d.generation,
   }));
 
-  const pieData = energyMix.map(item => ({
+  const pieData = energyMix.map((item) => ({
     name: item.source,
     value: item.units,
     color: getSourceColor(item.source),
@@ -33,11 +62,17 @@ export const ConsumerDashboard = () => {
   return (
     <Layout>
       <div className="space-y-6">
+        {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Energy Dashboard</h1>
-          <p className="text-slate-400">Track your green energy consumption and impact</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            Energy Dashboard
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400">
+            Track your green energy consumption and impact
+          </p>
         </div>
 
+        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
             icon={<Zap className="w-8 h-8" />}
@@ -69,9 +104,12 @@ export const ConsumerDashboard = () => {
           />
         </div>
 
+        {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card>
-            <h3 className="text-xl font-bold text-white mb-4">Energy Generation (24h)</h3>
+          <Card className="dark:bg-gray-900 dark:border-gray-700">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              Energy Generation (24h)
+            </h3>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
@@ -79,20 +117,36 @@ export const ConsumerDashboard = () => {
                 <YAxis stroke="#94a3b8" />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1e293b',
-                    border: '1px solid #334155',
-                    borderRadius: '8px',
+                    backgroundColor: "#1e293b",
+                    border: "1px solid #334155",
+                    borderRadius: "8px",
                   }}
+                  itemStyle={{ color: "#fff" }}
+                  labelStyle={{ color: "#94a3b8" }}
                 />
-                <Legend />
-                <Line type="monotone" dataKey="green" stroke="#10b981" strokeWidth={2} name="Green Energy" />
-                <Line type="monotone" dataKey="total" stroke="#3b82f6" strokeWidth={2} name="Total Energy" />
+                <Legend wrapperStyle={{ color: "#fff" }} />
+                <Line
+                  type="monotone"
+                  dataKey="green"
+                  stroke="#10b981"
+                  strokeWidth={2}
+                  name="Green Energy"
+                />
+                <Line
+                  type="monotone"
+                  dataKey="total"
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                  name="Total Energy"
+                />
               </LineChart>
             </ResponsiveContainer>
           </Card>
 
-          <Card>
-            <h3 className="text-xl font-bold text-white mb-4">Energy Mix</h3>
+          <Card className="dark:bg-gray-900 dark:border-gray-700">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+              Energy Mix
+            </h3>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -100,7 +154,9 @@ export const ConsumerDashboard = () => {
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) =>
+                    `${name} ${(percent * 100).toFixed(0)}%`
+                  }
                   outerRadius={100}
                   fill="#8884d8"
                   dataKey="value"
@@ -111,29 +167,42 @@ export const ConsumerDashboard = () => {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1e293b',
-                    border: '1px solid #334155',
-                    borderRadius: '8px',
+                    backgroundColor: "#1e293b",
+                    border: "1px solid #334155",
+                    borderRadius: "8px",
                   }}
+                  itemStyle={{ color: "#fff" }}
+                  labelStyle={{ color: "#94a3b8" }}
                 />
               </PieChart>
             </ResponsiveContainer>
           </Card>
         </div>
 
-        <Card className="bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border-emerald-500/30">
+        {/* Environmental Impact */}
+        <Card className="bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border border-emerald-500/30 dark:bg-gradient-to-r dark:from-emerald-500/20 dark:to-cyan-500/20 dark:border-emerald-500/40">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-xl font-bold text-white mb-2">Environmental Impact</h3>
-              <p className="text-slate-400 mb-4">Your contribution to a sustainable future</p>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                Environmental Impact
+              </h3>
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
+                Your contribution to a sustainable future
+              </p>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-emerald-400 text-sm mb-1">Trees Equivalent</p>
-                  <p className="text-2xl font-bold text-white">{metrics.treesEquivalent}</p>
+                  <p className="text-emerald-400 text-sm mb-1">
+                    Trees Equivalent
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {metrics.treesEquivalent}
+                  </p>
                 </div>
                 <div>
                   <p className="text-cyan-400 text-sm mb-1">Clean Energy %</p>
-                  <p className="text-2xl font-bold text-white">{metrics.greenPercentage.toFixed(1)}%</p>
+                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                    {metrics.greenPercentage.toFixed(1)}%
+                  </p>
                 </div>
               </div>
             </div>
@@ -141,13 +210,16 @@ export const ConsumerDashboard = () => {
           </div>
         </Card>
 
-        <Card>
-          <h3 className="text-xl font-bold text-white mb-4">Recent Activity</h3>
+        {/* Recent Activity */}
+        <Card className="dark:bg-gray-900 dark:border-gray-700">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Recent Activity
+          </h3>
           <div className="space-y-3">
             {userTokens.slice(0, 5).map((token) => (
               <div
                 key={token.id}
-                className="flex items-center justify-between p-3 bg-slate-800/30 rounded-lg"
+                className="flex items-center justify-between p-3 bg-gray-200/20 dark:bg-gray-800/50 rounded-lg"
               >
                 <div className="flex items-center space-x-3">
                   <div
@@ -155,15 +227,21 @@ export const ConsumerDashboard = () => {
                     style={{ backgroundColor: getSourceColor(token.source) }}
                   />
                   <div>
-                    <p className="text-white font-medium">{token.generatorName}</p>
-                    <p className="text-slate-400 text-sm">
+                    <p className="text-gray-900 dark:text-white font-medium">
+                      {token.generatorName}
+                    </p>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">
                       {new Date(token.timestamp).toLocaleString()}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-white font-semibold">{formatEnergy(token.units)}</p>
-                  <p className="text-emerald-400 text-sm capitalize">{token.source}</p>
+                  <p className="text-gray-900 dark:text-white font-semibold">
+                    {formatEnergy(token.units)}
+                  </p>
+                  <p className="text-emerald-400 text-sm capitalize">
+                    {token.source}
+                  </p>
                 </div>
               </div>
             ))}
