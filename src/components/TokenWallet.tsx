@@ -16,7 +16,7 @@ export const TokenWallet = ({
   tokens,
   title = "Token Wallet",
 }: TokenWalletProps) => {
-  const [selectedToken, setSelectedToken] = useState<GreenToken | null>(null);
+  const [selectedToken, setSelectedToken] = useState<GreenToken | any>(null);
   const [filter, setFilter] = useState<"all" | "generated" | "allocated">(
     "all"
   );
@@ -128,6 +128,11 @@ export const TokenWallet = ({
                     <p className="text-xs text-slate-400 dark:text-slate-500">
                       Generator ID: {token.generatorId}
                     </p>
+                    {token.expiry && (
+                      <p className="text-xs text-red-400 dark:text-red-500">
+                        Expires: {new Date(token.expiry).toLocaleDateString()}
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
@@ -238,6 +243,19 @@ export const TokenWallet = ({
                 </div>
               </div>
             </div>
+            <div className="flex items-center space-x-3">
+              <Calendar className="w-5 h-5 text-red-400" />
+              <div>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">
+                  Expiry
+                </p>
+                <p className="text-slate-900 dark:text-white font-semibold">
+                  {selectedToken.expiry
+                    ? new Date(selectedToken.expiry).toLocaleString()
+                    : "N/A"}
+                </p>
+              </div>
+            </div>
 
             {/* Logs Section */}
             {selectedToken.logs && selectedToken.logs.length > 0 && (
@@ -248,7 +266,7 @@ export const TokenWallet = ({
                     Allocation Logs
                   </span>
                 </div>
-                {selectedToken.logs.map((log) => (
+                {selectedToken.logs.map((log: any) => (
                   <Card
                     key={log.id}
                     className="bg-slate-100/10 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 p-3"

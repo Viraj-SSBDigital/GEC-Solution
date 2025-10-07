@@ -133,7 +133,7 @@ export const AdminGenerators = () => {
 
                     <div>
                       <h3 className={`text-lg font-bold mb-1 ${textPrimary}`}>
-                        {generator.name}
+                        {generator.name} ({generator?.id})
                       </h3>
                       <p className={`${textSecondary} text-sm capitalize`}>
                         {generator.type} Energy
@@ -175,181 +175,174 @@ export const AdminGenerators = () => {
             );
           })}
         </div>
-
-        {/* Generator Modal */}
-        <Modal
-          isOpen={selectedGenerator !== null}
-          onClose={() => setSelectedGenerator(null)}
-          title="Generator Details"
-          size="lg"
-        >
-          {selectedGenerator && (
-            <div className="space-y-6">
-              {/* Icon */}
-              <div className="flex items-center justify-center">
-                <div
-                  className="p-6 rounded-2xl"
-                  style={{
-                    backgroundColor: `${getSourceColor(
-                      selectedGenerator.type
-                    )}20`,
-                  }}
-                >
-                  <Zap
-                    className="w-16 h-16"
-                    style={{ color: getSourceColor(selectedGenerator.type) }}
-                  />
-                </div>
+      </div>
+      {/* Generator Modal */}
+      <Modal
+        isOpen={selectedGenerator !== null}
+        onClose={() => setSelectedGenerator(null)}
+        title="Generator Details"
+        size="lg"
+      >
+        {selectedGenerator && (
+          <div className="space-y-6">
+            {/* Icon */}
+            <div className="flex items-center justify-center">
+              <div
+                className="p-6 rounded-2xl"
+                style={{
+                  backgroundColor: `${getSourceColor(
+                    selectedGenerator.type
+                  )}20`,
+                }}
+              >
+                <Zap
+                  className="w-16 h-16"
+                  style={{ color: getSourceColor(selectedGenerator.type) }}
+                />
               </div>
+            </div>
 
-              {/* Name & Type */}
-              <div className="text-center">
-                <Badge
-                  variant={
-                    selectedGenerator.status === "active"
-                      ? "success"
-                      : "warning"
-                  }
-                  size="md"
-                >
-                  {selectedGenerator.status}
-                </Badge>
-                <h3 className={`text-2xl font-bold mt-4 ${textPrimary}`}>
-                  {selectedGenerator.name}
-                </h3>
-                <p className={`${textSecondary} mt-2 capitalize`}>
-                  {selectedGenerator.type} Energy Generator
+            {/* Name & Type */}
+            <div className="text-center">
+              <Badge
+                variant={
+                  selectedGenerator.status === "active" ? "success" : "warning"
+                }
+                size="md"
+              >
+                {selectedGenerator.status}
+              </Badge>
+              <h3 className={`text-2xl font-bold mt-4 ${textPrimary}`}>
+                {selectedGenerator.name} (ID: {selectedGenerator.id})
+              </h3>
+              <p className={`${textSecondary} mt-2 capitalize`}>
+                {selectedGenerator.type} Energy Generator
+              </p>
+            </div>
+
+            {/* Capacity & Contract */}
+            <div
+              className={`grid grid-cols-2 gap-4 p-4 rounded-lg ${cardBg} border ${borderColor}`}
+            >
+              <div>
+                <p className={`${textSecondary} text-sm mb-1`}>
+                  Total Capacity
+                </p>
+                <p className="text-2xl font-bold text-emerald-400">
+                  {formatEnergy(selectedGenerator.capacity)}
                 </p>
               </div>
+              <div>
+                <p className={`${textSecondary} text-sm mb-1`}>Contracted</p>
+                <p className="text-2xl font-bold text-cyan-400">
+                  {formatEnergy(selectedGenerator.contractedCapacity)}
+                </p>
+              </div>
+            </div>
 
-              {/* Capacity & Contract */}
-              <div
-                className={`grid grid-cols-2 gap-4 p-4 rounded-lg ${cardBg} border ${borderColor}`}
-              >
-                <div>
-                  <p className={`${textSecondary} text-sm mb-1`}>
-                    Total Capacity
+            {/* Location, Commission, Performance */}
+            <div className={`space-y-4 border-t ${borderColor} pt-4`}>
+              <div className="flex items-start space-x-3">
+                <MapPin className="w-5 h-5 text-amber-400 mt-0.5" />
+                <div className="flex-1">
+                  <p className={`${textSecondary} text-sm`}>Location</p>
+                  <p className={`${textPrimary} font-semibold`}>
+                    {selectedGenerator.location}
                   </p>
-                  <p className="text-2xl font-bold text-emerald-400">
-                    {formatEnergy(selectedGenerator.capacity)}
-                  </p>
-                </div>
-                <div>
-                  <p className={`${textSecondary} text-sm mb-1`}>Contracted</p>
-                  <p className="text-2xl font-bold text-cyan-400">
-                    {formatEnergy(selectedGenerator.contractedCapacity)}
+                  <p className={`${textSecondary} text-sm`}>
+                    {selectedGenerator.latitude.toFixed(4)},{" "}
+                    {selectedGenerator.longitude.toFixed(4)}
                   </p>
                 </div>
               </div>
 
-              {/* Location, Commission, Performance */}
-              <div className={`space-y-4 border-t ${borderColor} pt-4`}>
-                <div className="flex items-start space-x-3">
-                  <MapPin className="w-5 h-5 text-amber-400 mt-0.5" />
-                  <div className="flex-1">
-                    <p className={`${textSecondary} text-sm`}>Location</p>
-                    <p className={`${textPrimary} font-semibold`}>
-                      {selectedGenerator.location}
-                    </p>
-                    <p className={`${textSecondary} text-sm`}>
-                      {selectedGenerator.latitude.toFixed(4)},{" "}
-                      {selectedGenerator.longitude.toFixed(4)}
-                    </p>
-                  </div>
+              <div className="flex items-start space-x-3">
+                <Calendar className="w-5 h-5 text-blue-400 mt-0.5" />
+                <div className="flex-1">
+                  <p className={`${textSecondary} text-sm`}>Commission Date</p>
+                  <p className={`${textPrimary} font-semibold`}>
+                    {new Date(
+                      selectedGenerator.commissionDate
+                    ).toLocaleDateString()}
+                  </p>
                 </div>
+              </div>
 
-                <div className="flex items-start space-x-3">
-                  <Calendar className="w-5 h-5 text-blue-400 mt-0.5" />
-                  <div className="flex-1">
-                    <p className={`${textSecondary} text-sm`}>
-                      Commission Date
-                    </p>
-                    <p className={`${textPrimary} font-semibold`}>
-                      {new Date(
-                        selectedGenerator.commissionDate
-                      ).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <Activity className="w-5 h-5 text-emerald-400 mt-0.5" />
-                  <div className="flex-1">
-                    <p className={`${textSecondary} text-sm`}>Performance</p>
-                    <div className="mt-2">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm text-slate-400">
-                          Utilization
-                        </span>
-                        <span className="text-sm text-white font-semibold">
-                          {(
+              <div className="flex items-start space-x-3">
+                <Activity className="w-5 h-5 text-emerald-400 mt-0.5" />
+                <div className="flex-1">
+                  <p className={`${textSecondary} text-sm`}>Performance</p>
+                  <div className="mt-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-slate-400">
+                        Utilization
+                      </span>
+                      <span className="text-sm text-white font-semibold">
+                        {(
+                          (selectedGenerator.contractedCapacity /
+                            selectedGenerator.capacity) *
+                          100
+                        ).toFixed(1)}
+                        %
+                      </span>
+                    </div>
+                    <div className="w-full bg-slate-800 rounded-full h-2">
+                      <div
+                        className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-500"
+                        style={{
+                          width: `${
                             (selectedGenerator.contractedCapacity /
                               selectedGenerator.capacity) *
                             100
-                          ).toFixed(1)}
-                          %
-                        </span>
-                      </div>
-                      <div className="w-full bg-slate-800 rounded-full h-2">
-                        <div
-                          className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full transition-all duration-500"
-                          style={{
-                            width: `${
-                              (selectedGenerator.contractedCapacity /
-                                selectedGenerator.capacity) *
-                              100
-                            }%`,
-                          }}
-                        />
-                      </div>
+                          }%`,
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* Stats */}
-              {(() => {
-                const stats = getGeneratorStats(selectedGenerator.id);
-                return (
-                  <div
-                    className={`grid grid-cols-3 gap-4 p-4 rounded-lg ${cardBg} border ${borderColor}`}
-                  >
-                    <div className="text-center">
-                      <p className={`${textSecondary} text-sm mb-1`}>Tokens</p>
-                      <p className="text-2xl font-bold text-white">
-                        {stats.tokens}
-                      </p>
-                    </div>
-                    <div className="text-center">
-                      <p className={`${textSecondary} text-sm mb-1`}>
-                        Allocated
-                      </p>
-                      <p className="text-2xl font-bold text-emerald-400">
-                        {stats.allocated}
-                      </p>
-                    </div>
-                    <div className="text-center">
-                      <p className={`${textSecondary} text-sm mb-1`}>
-                        Certificates
-                      </p>
-                      <p className="text-2xl font-bold text-cyan-400">
-                        {stats.certificates}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })()}
-
-              <button
-                onClick={() => setSelectedGenerator(null)}
-                className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-lg transition-all"
-              >
-                Close
-              </button>
             </div>
-          )}
-        </Modal>
-      </div>
+
+            {/* Stats */}
+            {(() => {
+              const stats = getGeneratorStats(selectedGenerator.id);
+              return (
+                <div
+                  className={`grid grid-cols-3 gap-4 p-4 rounded-lg ${cardBg} border ${borderColor}`}
+                >
+                  <div className="text-center">
+                    <p className={`${textSecondary} text-sm mb-1`}>Tokens</p>
+                    <p className="text-2xl font-bold text-white">
+                      {stats.tokens}
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <p className={`${textSecondary} text-sm mb-1`}>Allocated</p>
+                    <p className="text-2xl font-bold text-emerald-400">
+                      {stats.allocated}
+                    </p>
+                  </div>
+                  <div className="text-center">
+                    <p className={`${textSecondary} text-sm mb-1`}>
+                      Certificates
+                    </p>
+                    <p className="text-2xl font-bold text-cyan-400">
+                      {stats.certificates}
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
+
+            <button
+              onClick={() => setSelectedGenerator(null)}
+              className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-lg transition-all"
+            >
+              Close
+            </button>
+          </div>
+        )}
+      </Modal>
     </Layout>
   );
 };

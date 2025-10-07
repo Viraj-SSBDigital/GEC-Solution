@@ -45,14 +45,6 @@ export const ConsumerDashboard = () => {
   );
   const energyMix = calculateEnergyMix(userTokens);
 
-  const chartData = energyData.slice(-24).map((d) => ({
-    time: new Date(d.timestamp).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-    green: d.greenGeneration,
-    total: d.generation,
-  }));
   // Prepare chart data for the last 24 hours
   const consumptionChartData = energyData.slice(-24).map((d) => {
     // Find user's green energy in this hour from allocated tokens
@@ -82,14 +74,6 @@ export const ConsumerDashboard = () => {
   const [customEnergyMixEnabled, setCustomEnergyMixEnabled] = useState(false);
   const energyMixOptions = ["Solar", "Wind", "Hydro", "Biomass"];
   const [selectedEnergyMix, setSelectedEnergyMix] = useState<string[]>([]);
-
-  const toggleSelection = (source: string) => {
-    if (selectedEnergyMix.includes(source)) {
-      setSelectedEnergyMix(selectedEnergyMix.filter((s) => s !== source));
-    } else {
-      setSelectedEnergyMix([...selectedEnergyMix, source]);
-    }
-  };
 
   return (
     <Layout>

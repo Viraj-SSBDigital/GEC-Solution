@@ -91,6 +91,8 @@ export const generateMockTokens = (count: number = 50): GreenToken[] => {
       status,
       consumerId: status === 'allocated' ? mockUsers.find(u => u.role === 'consumer')?.id : undefined,
       hash: generateHash({ generatorId: generator.id, timestamp, units }),
+      expiry: new Date(new Date(timestamp).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString(), // expires in 30 days
+
     };
 
     tokens.push(token);
@@ -122,6 +124,8 @@ export const generateMockCertificates = (tokens: GreenToken[]): GreenEnergyCerti
       hash: generateHash({ tokenId: token.id, consumerId: token.consumerId }),
       verified: true,
       co2Offset: token.units * 0.82,
+      expiry: new Date(new Date(token.timestamp).getTime() + 365 * 24 * 60 * 60 * 1000).toISOString(), // expires 1 year later
+
     };
 
     certificates.push(certificate);

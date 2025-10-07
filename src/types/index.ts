@@ -34,6 +34,7 @@ export interface GreenToken {
   status: TokenStatus;
   consumerId?: string;
   hash: string;
+  expiry: string
 }
 
 export interface GreenEnergyCertificate {
@@ -49,6 +50,7 @@ export interface GreenEnergyCertificate {
   issuanceTimestamp: string;
   location: string;
   hash: string;
+  expiry: string;
   verified: boolean;
   co2Offset: number;
 }

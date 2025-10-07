@@ -185,6 +185,20 @@ export const ConsumerCertificates = () => {
                         {formatCO2(cert.co2Offset)}
                       </span>
                     </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-400 dark:text-gray-500">
+                        Expiry
+                      </span>
+                      <span
+                        className={`font-semibold ${
+                          new Date(cert.expiry) < new Date()
+                            ? "text-red-500"
+                            : "text-orange-500 dark:text-white"
+                        }`}
+                      >
+                        {new Date(cert.expiry).toLocaleDateString()}
+                      </span>
+                    </div>
                   </div>
 
                   <button
@@ -333,6 +347,19 @@ export const ConsumerCertificates = () => {
                     {selectedCert.hash}
                   </p>
                 </div>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <Calendar className="w-5 h-5 text-red-400 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-gray-400 dark:text-gray-500 text-sm">
+                  Expiry Date
+                </p>
+                <p className="text-gray-900 dark:text-white font-semibold">
+                  {selectedCert.expiry
+                    ? new Date(selectedCert.expiry).toLocaleString()
+                    : "N/A"}
+                </p>
               </div>
             </div>
 
