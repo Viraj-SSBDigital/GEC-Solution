@@ -14,6 +14,9 @@ import { AdminGenerators } from "./pages/admin/Generators";
 import { AdminLedger } from "./pages/admin/Ledger";
 import { AdminReports } from "./pages/admin/Reports";
 import { ThemeProvider } from "./theme/ThemeProvider";
+import TokenAssignmentConfig from "./pages/admin/TokenAssignmentConfig";
+import TokenLogsAdmin from "./pages/admin/TokenLogs";
+import Integrations from "./pages/admin/Integration";
 
 const PrivateRoute = ({
   children,
@@ -121,6 +124,22 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/admin/token-assignment"
+        element={
+          <PrivateRoute allowedRoles={["admin"]}>
+            <TokenAssignmentConfig />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/token-logs"
+        element={
+          <PrivateRoute allowedRoles={["admin"]}>
+            <TokenLogsAdmin />
+          </PrivateRoute>
+        }
+      />
+      <Route
         path="/admin/ledger"
         element={
           <PrivateRoute allowedRoles={["admin"]}>
@@ -133,6 +152,14 @@ function AppRoutes() {
         element={
           <PrivateRoute allowedRoles={["admin"]}>
             <AdminReports />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/integrations"
+        element={
+          <PrivateRoute allowedRoles={["admin"]}>
+            <Integrations />
           </PrivateRoute>
         }
       />

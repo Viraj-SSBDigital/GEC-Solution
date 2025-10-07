@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useData } from "../../contexts/DataContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { Layout } from "../../components/Layout";
@@ -58,6 +59,19 @@ export const ConsumerDashboard = () => {
     value: item.units,
     color: getSourceColor(item.source),
   }));
+
+  // ======= Energy Mix Config =======
+  const [customEnergyMixEnabled, setCustomEnergyMixEnabled] = useState(false);
+  const energyMixOptions = ["Solar", "Wind", "Hydro", "Biomass"];
+  const [selectedEnergyMix, setSelectedEnergyMix] = useState<string[]>([]);
+
+  const toggleSelection = (source: string) => {
+    if (selectedEnergyMix.includes(source)) {
+      setSelectedEnergyMix(selectedEnergyMix.filter((s) => s !== source));
+    } else {
+      setSelectedEnergyMix([...selectedEnergyMix, source]);
+    }
+  };
 
   return (
     <Layout>
@@ -208,6 +222,50 @@ export const ConsumerDashboard = () => {
             </div>
             <Leaf className="w-24 h-24 text-emerald-400/20" />
           </div>
+        </Card>
+
+        {/* Energy Mix Configuration */}
+        <Card className="dark:bg-gray-900 dark:border-gray-700">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Configure Energy Mix
+          </h3>
+          <div className="flex items-center gap-2 mb-2">
+            <input
+              type="checkbox"
+              checked={customEnergyMixEnabled}
+              onChange={() =>
+                setCustomEnergyMixEnabled(!customEnergyMixEnabled)
+              }
+            />
+            <p className="text-gray-700 dark:text-gray-300">
+              Enable Custom Energy Mix
+            </p>
+          </div>
+          {customEnergyMixEnabled && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {energyMixOptions.map((source) => (
+                <button
+                  key={source}
+                  onClick={() => {
+                    if (selectedEnergyMix.includes(source)) {
+                      setSelectedEnergyMix(
+                        selectedEnergyMix.filter((s) => s !== source)
+                      );
+                    } else {
+                      setSelectedEnergyMix([...selectedEnergyMix, source]);
+                    }
+                  }}
+                  className={`px-3 py-1 rounded-lg border ${
+                    selectedEnergyMix.includes(source)
+                      ? "bg-emerald-500 text-white border-emerald-500"
+                      : "bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white border-gray-400 dark:border-gray-700"
+                  }`}
+                >
+                  {source}
+                </button>
+              ))}
+            </div>
+          )}
         </Card>
 
         {/* Recent Activity */}

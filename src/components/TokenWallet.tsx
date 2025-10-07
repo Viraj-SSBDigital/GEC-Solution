@@ -1,19 +1,21 @@
 import { useState } from "react";
-import { GreenToken } from "../types";
+import { GreenToken, AllocationLog } from "../types";
 import { Card } from "./Card";
 import { Badge } from "./Badge";
 import { Modal } from "./Modal";
-import { Wallet, Calendar, MapPin, Hash, Zap } from "lucide-react";
+import { Wallet, Calendar, MapPin, Hash, Zap, List } from "lucide-react";
 import { motion } from "framer-motion";
 import { formatEnergy, getSourceColor } from "../utils/calculations";
 
 interface TokenWalletProps {
   tokens: GreenToken[];
+  logs?: AllocationLog[]; // Optional logs
   title?: string;
 }
 
 export const TokenWallet = ({
   tokens,
+  logs = [],
   title = "Token Wallet",
 }: TokenWalletProps) => {
   const [selectedToken, setSelectedToken] = useState<GreenToken | null>(null);
@@ -37,6 +39,9 @@ export const TokenWallet = ({
         ? "bg-emerald-500 text-white"
         : "bg-slate-200/10 dark:bg-slate-800/50 text-slate-800 dark:text-slate-400 hover:bg-slate-300/20 dark:hover:bg-slate-700"
     }`;
+
+  const getTokenLogs = (tokenId: string) =>
+    logs.filter((log) => log.tokenId === tokenId);
 
   return (
     <>
@@ -149,14 +154,17 @@ export const TokenWallet = ({
           </Card>
         )}
       </div>
+
       {/* Token Modal */}
       <Modal
         isOpen={selectedToken !== null}
         onClose={() => setSelectedToken(null)}
         title="Token Details"
+        size="lg"
       >
         {selectedToken && (
           <div className="space-y-4">
+            {/* Token + Generator Info */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">
@@ -230,16 +238,38 @@ export const TokenWallet = ({
               </div>
             </div>
 
-            <div className="bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/30 rounded-lg p-4">
-              <div className="flex items-center justify-between">
-                <span className="text-emerald-400 font-semibold">
-                  Energy Units
-                </span>
-                <span className="text-slate-900 dark:text-white text-2xl font-bold">
-                  {formatEnergy(selectedToken.units)}
-                </span>
+            {/* Logs Section */}
+            {logs.length > 0 && (
+              <div className="border-t border-slate-200 dark:border-slate-700 pt-4 space-y-2">
+                <div className="flex items-center space-x-2 mb-2">
+                  <List className="w-5 h-5 text-violet-400" />
+                  <span className="font-semibold text-slate-900 dark:text-white">
+                    Allocation Logs
+                  </span>
+                </div>
+                {getTokenLogs(selectedToken.id).map((log) => (
+                  <Card
+                    key={log.id}
+                    className="bg-slate-100/10 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 p-3"
+                  >
+                    <div className="flex justify-between items-center text-sm">
+                      <span>
+                        {log.consumerName} ({log.units} units)
+                      </span>
+                      <span className="text-slate-500 dark:text-slate-400">
+                        {log.method.toUpperCase()} –{" "}
+                        {new Date(log.timestamp).toLocaleString()}
+                      </span>
+                    </div>
+                  </Card>
+                ))}
+                {getTokenLogs(selectedToken.id).length === 0 && (
+                  <p className="text-slate-500 dark:text-slate-400 text-sm">
+                    No logs for this token
+                  </p>
+                )}
               </div>
-            </div>
+            )}
           </div>
         )}
       </Modal>
