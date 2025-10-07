@@ -8,14 +8,12 @@ import { motion } from "framer-motion";
 import { formatEnergy, getSourceColor } from "../utils/calculations";
 
 interface TokenWalletProps {
-  tokens: GreenToken[];
-  logs?: AllocationLog[]; // Optional logs
+  tokens: (GreenToken & { logs?: AllocationLog[] })[]; // include logs per token
   title?: string;
 }
 
 export const TokenWallet = ({
   tokens,
-  logs = [],
   title = "Token Wallet",
 }: TokenWalletProps) => {
   const [selectedToken, setSelectedToken] = useState<GreenToken | null>(null);
@@ -39,9 +37,6 @@ export const TokenWallet = ({
         ? "bg-emerald-500 text-white"
         : "bg-slate-200/10 dark:bg-slate-800/50 text-slate-800 dark:text-slate-400 hover:bg-slate-300/20 dark:hover:bg-slate-700"
     }`;
-
-  const getTokenLogs = (tokenId: string) =>
-    logs.filter((log) => log.tokenId === tokenId);
 
   return (
     <>
@@ -130,6 +125,9 @@ export const TokenWallet = ({
                     <p className="text-sm text-slate-500 dark:text-slate-400">
                       {token.generatorName}
                     </p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">
+                      Generator ID: {token.generatorId}
+                    </p>
                   </div>
 
                   <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
@@ -164,7 +162,7 @@ export const TokenWallet = ({
       >
         {selectedToken && (
           <div className="space-y-4">
-            {/* Token + Generator Info */}
+            {/* Token Info */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">
@@ -197,6 +195,9 @@ export const TokenWallet = ({
                   </p>
                   <p className="text-slate-900 dark:text-white font-semibold">
                     {selectedToken.generatorName}
+                  </p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500">
+                    Generator ID: {selectedToken.generatorId}
                   </p>
                 </div>
               </div>
@@ -239,7 +240,7 @@ export const TokenWallet = ({
             </div>
 
             {/* Logs Section */}
-            {logs.length > 0 && (
+            {selectedToken.logs && selectedToken.logs.length > 0 && (
               <div className="border-t border-slate-200 dark:border-slate-700 pt-4 space-y-2">
                 <div className="flex items-center space-x-2 mb-2">
                   <List className="w-5 h-5 text-violet-400" />
@@ -247,7 +248,7 @@ export const TokenWallet = ({
                     Allocation Logs
                   </span>
                 </div>
-                {getTokenLogs(selectedToken.id).map((log) => (
+                {selectedToken.logs.map((log) => (
                   <Card
                     key={log.id}
                     className="bg-slate-100/10 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 p-3"
@@ -263,11 +264,6 @@ export const TokenWallet = ({
                     </div>
                   </Card>
                 ))}
-                {getTokenLogs(selectedToken.id).length === 0 && (
-                  <p className="text-slate-500 dark:text-slate-400 text-sm">
-                    No logs for this token
-                  </p>
-                )}
               </div>
             )}
           </div>

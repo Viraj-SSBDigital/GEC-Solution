@@ -53,6 +53,24 @@ export const ConsumerDashboard = () => {
     green: d.greenGeneration,
     total: d.generation,
   }));
+  // Prepare chart data for the last 24 hours
+  const consumptionChartData = energyData.slice(-24).map((d) => {
+    // Find user's green energy in this hour from allocated tokens
+    const hourTokens = userTokens.filter(
+      (t) =>
+        new Date(t.timestamp).getHours() === new Date(d.timestamp).getHours()
+    );
+    const greenEnergy = hourTokens.reduce((sum, t) => sum + t.units, 0);
+
+    return {
+      time: new Date(d.timestamp).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      green: greenEnergy,
+      consumption: d.consumption, // user's actual consumption
+    };
+  });
 
   const pieData = energyMix.map((item) => ({
     name: item.source,
@@ -97,7 +115,7 @@ export const ConsumerDashboard = () => {
           />
           <StatCard
             icon={<Award className="w-8 h-8" />}
-            label="Certificates Earned"
+            label="Certificates"
             value={metrics.certificatesEarned}
             trend={{ value: 8.3, positive: true }}
             color="blue"
@@ -117,15 +135,58 @@ export const ConsumerDashboard = () => {
             color="amber"
           />
         </div>
+        {/* Energy Mix Configuration */}
+        <Card className="dark:bg-gray-900 dark:border-gray-700">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+            Configure Energy Mix
+          </h3>
+          <div className="flex items-center gap-2 mb-2">
+            <input
+              type="checkbox"
+              checked={customEnergyMixEnabled}
+              onChange={() =>
+                setCustomEnergyMixEnabled(!customEnergyMixEnabled)
+              }
+            />
+            <p className="text-gray-700 dark:text-gray-300">
+              Enable Custom Energy Mix
+            </p>
+          </div>
+          {customEnergyMixEnabled && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {energyMixOptions.map((source) => (
+                <button
+                  key={source}
+                  onClick={() => {
+                    if (selectedEnergyMix.includes(source)) {
+                      setSelectedEnergyMix(
+                        selectedEnergyMix.filter((s) => s !== source)
+                      );
+                    } else {
+                      setSelectedEnergyMix([...selectedEnergyMix, source]);
+                    }
+                  }}
+                  className={`px-3 py-1 rounded-lg border ${
+                    selectedEnergyMix.includes(source)
+                      ? "bg-emerald-500 text-white border-emerald-500"
+                      : "bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white border-gray-400 dark:border-gray-700"
+                  }`}
+                >
+                  {source}
+                </button>
+              ))}
+            </div>
+          )}
+        </Card>
 
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card className="dark:bg-gray-900 dark:border-gray-700">
             <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-              Energy Generation (24h)
+              Energy Consumption (24h)
             </h3>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={chartData}>
+              <LineChart data={consumptionChartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                 <XAxis dataKey="time" stroke="#94a3b8" />
                 <YAxis stroke="#94a3b8" />
@@ -141,17 +202,17 @@ export const ConsumerDashboard = () => {
                 <Legend wrapperStyle={{ color: "#fff" }} />
                 <Line
                   type="monotone"
+                  dataKey="consumption"
+                  stroke="#3b82f6"
+                  strokeWidth={2}
+                  name="Consumption"
+                />
+                <Line
+                  type="monotone"
                   dataKey="green"
                   stroke="#10b981"
                   strokeWidth={2}
                   name="Green Energy"
-                />
-                <Line
-                  type="monotone"
-                  dataKey="total"
-                  stroke="#3b82f6"
-                  strokeWidth={2}
-                  name="Total Energy"
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -222,50 +283,6 @@ export const ConsumerDashboard = () => {
             </div>
             <Leaf className="w-24 h-24 text-emerald-400/20" />
           </div>
-        </Card>
-
-        {/* Energy Mix Configuration */}
-        <Card className="dark:bg-gray-900 dark:border-gray-700">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-            Configure Energy Mix
-          </h3>
-          <div className="flex items-center gap-2 mb-2">
-            <input
-              type="checkbox"
-              checked={customEnergyMixEnabled}
-              onChange={() =>
-                setCustomEnergyMixEnabled(!customEnergyMixEnabled)
-              }
-            />
-            <p className="text-gray-700 dark:text-gray-300">
-              Enable Custom Energy Mix
-            </p>
-          </div>
-          {customEnergyMixEnabled && (
-            <div className="flex flex-wrap gap-2 mt-2">
-              {energyMixOptions.map((source) => (
-                <button
-                  key={source}
-                  onClick={() => {
-                    if (selectedEnergyMix.includes(source)) {
-                      setSelectedEnergyMix(
-                        selectedEnergyMix.filter((s) => s !== source)
-                      );
-                    } else {
-                      setSelectedEnergyMix([...selectedEnergyMix, source]);
-                    }
-                  }}
-                  className={`px-3 py-1 rounded-lg border ${
-                    selectedEnergyMix.includes(source)
-                      ? "bg-emerald-500 text-white border-emerald-500"
-                      : "bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white border-gray-400 dark:border-gray-700"
-                  }`}
-                >
-                  {source}
-                </button>
-              ))}
-            </div>
-          )}
         </Card>
 
         {/* Recent Activity */}
