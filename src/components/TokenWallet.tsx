@@ -39,111 +39,116 @@ export const TokenWallet = ({
     }`;
 
   return (
-    <div className="space-y-4">
-      {/* Header + Filters */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between space-y-2 md:space-y-0">
-        <div className="flex items-center space-x-3">
-          <Wallet className="w-6 h-6 text-emerald-400" />
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
-            {title}
-          </h2>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={() => setFilter("all")}
-            className={getButtonClasses(filter === "all")}
-          >
-            All ({tokens.length})
-          </button>
-          <button
-            onClick={() => setFilter("generated")}
-            className={getButtonClasses(filter === "generated")}
-          >
-            Available ({tokens.filter((t) => t.status === "generated").length})
-          </button>
-          <button
-            onClick={() => setFilter("allocated")}
-            className={getButtonClasses(filter === "allocated")}
-          >
-            Allocated ({tokens.filter((t) => t.status === "allocated").length})
-          </button>
-        </div>
-      </div>
-
-      {/* Total Energy Card */}
-      <Card className="bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border-emerald-500/30">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">
-              Total Energy
-            </p>
-            <p className="text-3xl font-bold text-slate-900 dark:text-white">
-              {formatEnergy(totalUnits)}
-            </p>
+    <>
+      <div className="space-y-4">
+        {/* Header + Filters */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between space-y-2 md:space-y-0">
+          <div className="flex items-center space-x-3">
+            <Wallet className="w-6 h-6 text-emerald-400" />
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
+              {title}
+            </h2>
           </div>
-          <Zap className="w-12 h-12 text-emerald-400" />
-        </div>
-      </Card>
 
-      {/* Token Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredTokens.map((token, index) => (
-          <motion.div
-            key={token.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05 }}
-          >
-            <Card
-              hoverable
-              onClick={() => setSelectedToken(token)}
-              className="bg-slate-100/10 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700"
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setFilter("all")}
+              className={getButtonClasses(filter === "all")}
             >
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <Badge
-                    variant={token.status === "allocated" ? "success" : "info"}
-                  >
-                    {token.status}
-                  </Badge>
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: getSourceColor(token.source) }}
-                  />
-                </div>
+              All ({tokens.length})
+            </button>
+            <button
+              onClick={() => setFilter("generated")}
+              className={getButtonClasses(filter === "generated")}
+            >
+              Available ({tokens.filter((t) => t.status === "generated").length}
+              )
+            </button>
+            <button
+              onClick={() => setFilter("allocated")}
+              className={getButtonClasses(filter === "allocated")}
+            >
+              Allocated ({tokens.filter((t) => t.status === "allocated").length}
+              )
+            </button>
+          </div>
+        </div>
 
-                <div>
-                  <p className="text-lg font-bold text-slate-900 dark:text-white">
-                    {token.id}
-                  </p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
-                    {token.generatorName}
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
-                  <span className="text-slate-500 dark:text-slate-400 text-sm capitalize">
-                    {token.source}
-                  </span>
-                  <span className="text-slate-900 dark:text-white font-semibold">
-                    {formatEnergy(token.units)}
-                  </span>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
-
-      {filteredTokens.length === 0 && (
-        <Card className="bg-slate-100/10 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700">
-          <p className="text-center text-slate-500 dark:text-slate-400 py-8">
-            No tokens found
-          </p>
+        {/* Total Energy Card */}
+        <Card className="bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 border-emerald-500/30">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">
+                Total Energy
+              </p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-white">
+                {formatEnergy(totalUnits)}
+              </p>
+            </div>
+            <Zap className="w-12 h-12 text-emerald-400" />
+          </div>
         </Card>
-      )}
 
+        {/* Token Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredTokens.map((token, index) => (
+            <motion.div
+              key={token.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+            >
+              <Card
+                hoverable
+                onClick={() => setSelectedToken(token)}
+                className="bg-slate-100/10 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Badge
+                      variant={
+                        token.status === "allocated" ? "success" : "info"
+                      }
+                    >
+                      {token.status}
+                    </Badge>
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: getSourceColor(token.source) }}
+                    />
+                  </div>
+
+                  <div>
+                    <p className="text-lg font-bold text-slate-900 dark:text-white">
+                      {token.id}
+                    </p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
+                      {token.generatorName}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
+                    <span className="text-slate-500 dark:text-slate-400 text-sm capitalize">
+                      {token.source}
+                    </span>
+                    <span className="text-slate-900 dark:text-white font-semibold">
+                      {formatEnergy(token.units)}
+                    </span>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+        {filteredTokens.length === 0 && (
+          <Card className="bg-slate-100/10 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700">
+            <p className="text-center text-slate-500 dark:text-slate-400 py-8">
+              No tokens found
+            </p>
+          </Card>
+        )}
+      </div>
       {/* Token Modal */}
       <Modal
         isOpen={selectedToken !== null}
@@ -238,6 +243,6 @@ export const TokenWallet = ({
           </div>
         )}
       </Modal>
-    </div>
+    </>
   );
 };

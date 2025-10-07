@@ -20,7 +20,7 @@ import { Download, TrendingUp, Activity, Award } from "lucide-react";
 import { formatEnergy, getSourceColor } from "../../utils/calculations";
 
 export const AdminReports = () => {
-  const { tokens, certificates, generators, energyData } = useData();
+  const { tokens, certificates, generators } = useData();
 
   const sourceDistribution = tokens.reduce((acc: any, token) => {
     const existing = acc.find((item: any) => item.name === token.source);
