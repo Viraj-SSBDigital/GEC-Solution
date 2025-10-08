@@ -218,6 +218,7 @@ export const generateMockBlockchain = (tokens: GreenToken[], certificates: Green
     });
     previousHash = hash;
   });
+  console.log(transactions);
 
   return transactions.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 };

@@ -108,7 +108,7 @@ export const Layout = ({ children }: LayoutProps) => {
     <div className="flex flex-col bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors">
       {/* Navbar */}
       <nav className="border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl flex-shrink-0">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-fit items-center justify-between p-3">
             {/* Logo */}
             <div className="flex items-center space-x-4">
@@ -119,7 +119,7 @@ export const Layout = ({ children }: LayoutProps) => {
               >
                 <Zap className="w-8 h-8 text-emerald-500" />
                 <span className="text-xl font-bold text-slate-900 dark:text-white">
-                  GreenChain
+                  Green Energy Certificate Solution
                 </span>
               </motion.div>
             </div>

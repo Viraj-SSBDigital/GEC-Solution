@@ -1,4 +1,5 @@
-# GreenChain - Blockchain-based Green Energy Certificate System
+# Green Energy Certificate 
+Solution - Blockchain-based Green Energy Certificate System
 
 A fully interactive React.js application simulating a comprehensive Blockchain-based Green Energy Certificate (GEC) system with real-time data integration, token management, and certificate issuance.
 

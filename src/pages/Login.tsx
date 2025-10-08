@@ -67,7 +67,8 @@ export const Login = () => {
           >
             <Zap className="w-12 h-12 text-emerald-500 dark:text-emerald-400" />
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-              GreenChain
+              Green Energy Certificate 
+Solution
             </h1>
           </motion.div>
           <p className="text-gray-600 dark:text-gray-400">

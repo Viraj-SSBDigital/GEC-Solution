@@ -156,110 +156,109 @@ export const AdminLedger = () => {
             </p>
           </Card>
         )}
-
-        {/* Modal */}
-        <Modal
-          isOpen={selectedTx !== null}
-          onClose={() => setSelectedTx(null)}
-          title="Transaction Details"
-          size="lg"
-        >
-          {selectedTx && (
-            <div className="space-y-6">
-              <div className="flex items-center justify-center">
-                <div className="p-6 bg-emerald-500/20 rounded-2xl">
-                  <Database className="w-16 h-16 text-emerald-500" />
-                </div>
-              </div>
-
-              <div className="text-center">
-                <Badge variant={getTypeBadge(selectedTx.type)} size="md">
-                  {getTypeLabel(selectedTx.type)}
-                </Badge>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-4">
-                  {selectedTx.id}
-                </h3>
-                <p className="text-gray-500 dark:text-gray-400 mt-2">
-                  Blockchain Transaction
-                </p>
-              </div>
-
-              <div className="space-y-4 border-t border-gray-200 dark:border-gray-700 pt-4">
-                <div className="flex items-start space-x-3">
-                  <Hash className="w-5 h-5 text-emerald-500 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">
-                      Transaction Hash
-                    </p>
-                    <p className="text-gray-900 dark:text-white font-mono text-xs break-all">
-                      {selectedTx.hash}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <Hash className="w-5 h-5 text-blue-500 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">
-                      Previous Hash
-                    </p>
-                    <p className="text-gray-900 dark:text-white font-mono text-xs break-all">
-                      {selectedTx.previousHash}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-3">
-                  <Calendar className="w-5 h-5 text-cyan-500 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">
-                      Timestamp
-                    </p>
-                    <p className="text-gray-900 dark:text-white font-semibold">
-                      {new Date(selectedTx.timestamp).toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">
-                  Transaction Data
-                </p>
-                <div className="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 max-h-64 overflow-auto">
-                  <pre className="text-xs text-gray-700 dark:text-gray-300 font-mono whitespace-pre-wrap">
-                    {JSON.stringify(selectedTx.data, null, 2)}
-                  </pre>
-                </div>
-              </div>
-
-              <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <button
-                  onClick={() => {
-                    const data = JSON.stringify(selectedTx, null, 2);
-                    const blob = new Blob([data], { type: "application/json" });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = `${selectedTx.id}.json`;
-                    a.click();
-                    URL.revokeObjectURL(url);
-                  }}
-                  className="flex-1 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition-all"
-                >
-                  Export Transaction
-                </button>
-                <button
-                  onClick={() => setSelectedTx(null)}
-                  className="px-6 py-3 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-lg transition-all"
-                >
-                  Close
-                </button>
+      </div>
+      {/* Modal */}
+      <Modal
+        isOpen={selectedTx !== null}
+        onClose={() => setSelectedTx(null)}
+        title="Transaction Details"
+        size="lg"
+      >
+        {selectedTx && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-center">
+              <div className="p-6 bg-emerald-500/20 rounded-2xl">
+                <Database className="w-16 h-16 text-emerald-500" />
               </div>
             </div>
-          )}
-        </Modal>
-      </div>
+
+            <div className="text-center">
+              <Badge variant={getTypeBadge(selectedTx.type)} size="md">
+                {getTypeLabel(selectedTx.type)}
+              </Badge>
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-4">
+                {selectedTx.id}
+              </h3>
+              <p className="text-gray-500 dark:text-gray-400 mt-2">
+                Blockchain Transaction
+              </p>
+            </div>
+
+            <div className="space-y-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+              <div className="flex items-start space-x-3">
+                <Hash className="w-5 h-5 text-emerald-500 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    Transaction Hash
+                  </p>
+                  <p className="text-gray-900 dark:text-white font-mono text-xs break-all">
+                    {selectedTx.hash}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <Hash className="w-5 h-5 text-blue-500 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    Previous Hash
+                  </p>
+                  <p className="text-gray-900 dark:text-white font-mono text-xs break-all">
+                    {selectedTx.previousHash}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-3">
+                <Calendar className="w-5 h-5 text-cyan-500 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    Timestamp
+                  </p>
+                  <p className="text-gray-900 dark:text-white font-semibold">
+                    {new Date(selectedTx.timestamp).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+              <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">
+                Transaction Data
+              </p>
+              <div className="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 max-h-64 overflow-auto">
+                <pre className="text-xs text-gray-700 dark:text-gray-300 font-mono whitespace-pre-wrap">
+                  {JSON.stringify(selectedTx.data, null, 2)}
+                </pre>
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <button
+                onClick={() => {
+                  const data = JSON.stringify(selectedTx, null, 2);
+                  const blob = new Blob([data], { type: "application/json" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `${selectedTx.id}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="flex-1 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition-all"
+              >
+                Export Transaction
+              </button>
+              <button
+                onClick={() => setSelectedTx(null)}
+                className="px-6 py-3 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-lg transition-all"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </Layout>
   );
 };

@@ -90,9 +90,8 @@ export const AdminReports = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `greenchain-report-${
-        new Date().toISOString().split("T")[0]
-      }.json`;
+      a.download = `Green Energy Certificate 
+Solution-report-${new Date().toISOString().split("T")[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
     } else {
@@ -108,9 +107,8 @@ export const AdminReports = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `greenchain-report-${
-        new Date().toISOString().split("T")[0]
-      }.csv`;
+      a.download = `Green Energy Certificate 
+Solution-report-${new Date().toISOString().split("T")[0]}.csv`;
       a.click();
       URL.revokeObjectURL(url);
     }
@@ -225,8 +223,9 @@ export const AdminReports = () => {
                     backgroundColor: "#1e293b",
                     border: "1px solid #334155",
                     borderRadius: "8px",
-                    color: "#fff",
                   }}
+                  itemStyle={{ color: "#fff" }}
+                  labelStyle={{ color: "#94a3b8" }}
                 />
               </PieChart>
             </ResponsiveContainer>

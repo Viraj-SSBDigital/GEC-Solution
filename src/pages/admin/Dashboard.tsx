@@ -66,7 +66,8 @@ export const AdminDashboard = () => {
             System Overview
           </h1>
           <p className="text-gray-600 dark:text-slate-400">
-            Monitor and manage the GreenChain ecosystem
+            Monitor and manage the Green Energy Certificate 
+Solution ecosystem
           </p>
         </div>
 
