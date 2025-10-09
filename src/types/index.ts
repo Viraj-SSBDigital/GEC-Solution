@@ -33,8 +33,11 @@ export interface GreenToken {
   location: string;
   status: TokenStatus;
   consumerId?: string;
+  consumerName?: string;
   hash: string;
-  expiry: string
+  expiry: string;
+  consumed: any;
+  consumedDate: any;
 }
 
 export interface GreenEnergyCertificate {

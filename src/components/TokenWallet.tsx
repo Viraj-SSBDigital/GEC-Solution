@@ -101,10 +101,14 @@ export const TokenWallet = ({
               <Card
                 hoverable
                 onClick={() => setSelectedToken(token)}
-                className="bg-slate-100/10 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700"
+                className={`bg-slate-100/10 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 ${
+                  token.consumed
+                    ? "ring-2 ring-emerald-400"
+                    : "ring-2 ring-orange-400"
+                }`}
               >
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <Badge
                       variant={
                         token.status === "allocated" ? "success" : "info"
@@ -130,9 +134,26 @@ export const TokenWallet = ({
                     </p>
                     {token.expiry && (
                       <p className="text-xs text-red-400 dark:text-red-500">
-                        Expires: {new Date(token.expiry).toLocaleDateString()}
+                        Expires:{" "}
+                        {(() => {
+                          const d = new Date(token.expiry);
+                          const day = String(d.getDate()).padStart(2, "0");
+                          const month = String(d.getMonth() + 1).padStart(
+                            2,
+                            "0"
+                          ); // months are 0-indexed
+                          const year = String(d.getFullYear()).slice(-2); // last 2 digits
+                          return `${day}/${month}/${year}`;
+                        })()}
                       </p>
                     )}
+
+                    {/* Highlight consumed */}
+                    <div className="mt-2 flex justify-end">
+                      <Badge variant={token.consumed ? "success" : "warning"}>
+                        {token.consumed ? "Consumed" : "Not Consumed"}
+                      </Badge>
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
@@ -191,6 +212,32 @@ export const TokenWallet = ({
               </div>
             </div>
 
+            {/* Consumed Status */}
+            <div>
+              <p className="text-slate-500 dark:text-slate-400 text-sm mb-1">
+                Consumption Status
+              </p>
+              <Badge variant={selectedToken.consumed ? "success" : "warning"}>
+                {selectedToken.consumed ? "Consumed" : "Not Consumed"}
+              </Badge>
+
+              {selectedToken.consumed && selectedToken.consumedDate && (
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                  {(() => {
+                    const d = new Date(selectedToken.consumedDate);
+                    const day = String(d.getDate()).padStart(2, "0");
+                    const month = String(d.getMonth() + 1).padStart(2, "0");
+                    const year = String(d.getFullYear()).slice(-2);
+                    const time = d.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    });
+                    return `on ${day}/${month}/${year}, ${time}`;
+                  })()}
+                </p>
+              )}
+            </div>
+
             <div className="border-t border-slate-200 dark:border-slate-700 pt-4 space-y-3">
               <div className="flex items-center space-x-3">
                 <Zap className="w-5 h-5 text-emerald-400" />
@@ -206,6 +253,24 @@ export const TokenWallet = ({
                   </p>
                 </div>
               </div>
+
+              {/* Consumer Info */}
+              {selectedToken.consumerId && (
+                <div className="flex items-center space-x-3">
+                  <Wallet className="w-5 h-5 text-amber-400" />
+                  <div>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm">
+                      Consumer
+                    </p>
+                    <p className="text-slate-900 dark:text-white font-semibold">
+                      {selectedToken.consumerName || "N/A"}
+                    </p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">
+                      Consumer ID: {selectedToken.consumerId}
+                    </p>
+                  </div>
+                </div>
+              )}
 
               <div className="flex items-center space-x-3">
                 <Calendar className="w-5 h-5 text-blue-400" />
@@ -243,6 +308,7 @@ export const TokenWallet = ({
                 </div>
               </div>
             </div>
+
             <div className="flex items-center space-x-3">
               <Calendar className="w-5 h-5 text-red-400" />
               <div>
@@ -250,9 +316,20 @@ export const TokenWallet = ({
                   Expiry
                 </p>
                 <p className="text-slate-900 dark:text-white font-semibold">
-                  {selectedToken.expiry
-                    ? new Date(selectedToken.expiry).toLocaleString()
-                    : "N/A"}
+                  {selectedToken.expiry ? (
+                    <p className="text-xs text-red-400 dark:text-red-500">
+                      Expires:{" "}
+                      {(() => {
+                        const d = new Date(selectedToken.expiry);
+                        const day = String(d.getDate()).padStart(2, "0");
+                        const month = String(d.getMonth() + 1).padStart(2, "0");
+                        const year = String(d.getFullYear()).slice(-2);
+                        return `${day}/${month}/${year}`;
+                      })()}
+                    </p>
+                  ) : (
+                    "N/A"
+                  )}
                 </p>
               </div>
             </div>

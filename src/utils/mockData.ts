@@ -77,8 +77,14 @@ export const generateMockTokens = (count: number = 50): GreenToken[] => {
   for (let i = 0; i < count; i++) {
     const generator = mockGenerators[Math.floor(Math.random() * mockGenerators.length)];
     const timestamp = new Date(now - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString();
-    const units = Math.floor(Math.random() * 500) + 100;
+    const units = Math.floor(Math.random() * 5) + 10;
     const status = Math.random() > 0.3 ? 'allocated' : 'generated';
+
+    // Assign consumer if allocated
+    const consumer =
+      status === 'allocated'
+        ? mockUsers.find(u => u.role === 'consumer')
+        : undefined;
 
     const token: GreenToken = {
       id: `TOK${String(i + 1).padStart(6, '0')}`,
@@ -89,17 +95,28 @@ export const generateMockTokens = (count: number = 50): GreenToken[] => {
       timestamp,
       location: generator.location,
       status,
-      consumerId: status === 'allocated' ? mockUsers.find(u => u.role === 'consumer')?.id : undefined,
-      hash: generateHash({ generatorId: generator.id, timestamp, units }),
-      expiry: new Date(new Date(timestamp).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString(), // expires in 30 days
+      consumerId: consumer?.id,
+      consumerName: consumer?.name,
+      consumed: status === 'allocated' ? Math.random() > 0.5 : false, // randomly consumed or not
+      consumedDate:
+        status === 'allocated' && Math.random() > 0.5
+          ? new Date(
+            new Date(timestamp).getTime() + Math.random() * 5 * 24 * 60 * 60 * 1000
+          ).toISOString() // randomly within 5 days after generation
+          : undefined,
 
+      hash: generateHash({ generatorId: generator.id, timestamp, units }),
+      expiry: new Date(new Date(timestamp).getTime() + 30 * 24 * 60 * 60 * 1000).toISOString(),
     };
 
     tokens.push(token);
   }
 
-  return tokens.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  return tokens.sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
 };
+
 
 export const generateMockCertificates = (tokens: GreenToken[]): GreenEnergyCertificate[] => {
   const certificates: GreenEnergyCertificate[] = [];
@@ -137,21 +154,30 @@ export const generateMockCertificates = (tokens: GreenToken[]): GreenEnergyCerti
 export const generateMockEnergyData = (days: number = 7): EnergyData[] => {
   const data: EnergyData[] = [];
   const now = Date.now();
-  const interval = 60 * 60 * 1000;
+  const interval = 60 * 60 * 1000; // hourly
 
   for (let i = days * 24; i >= 0; i--) {
     const timestamp = new Date(now - i * interval).toISOString();
 
+    // Keep values realistic and in 2-digit ranges (like 50–99)
+    const generation = Math.floor(Math.random() * 50) + 50; // 50–99
+    const consumption = Math.floor(Math.random() * 50) + 40; // 40–89
+    const greenGeneration = Math.min(
+      generation,
+      Math.floor(Math.random() * 40) + 30 // 30–69, always <= generation
+    );
+
     data.push({
       timestamp,
-      generation: Math.floor(Math.random() * 20000) + 5000,
-      consumption: Math.floor(Math.random() * 18000) + 6000,
-      greenGeneration: Math.floor(Math.random() * 15000) + 3000,
+      generation,
+      consumption,
+      greenGeneration,
     });
   }
 
   return data;
 };
+
 
 export const generateMockAllocationLogs = (tokens: GreenToken[]): AllocationLog[] => {
   const logs: AllocationLog[] = [];

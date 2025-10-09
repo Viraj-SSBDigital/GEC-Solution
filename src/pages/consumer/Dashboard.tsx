@@ -55,7 +55,9 @@ export const ConsumerDashboard = () => {
     const greenEnergy = hourTokens.reduce((sum, t) => sum + t.units, 0);
 
     // Normal energy = total consumption - green energy (not less than 0)
-    const normalEnergy = Math.max(d.consumption - greenEnergy, 0);
+    let normalEnergy = Math.max((d.consumption - greenEnergy) * 0.5, 0);
+
+    // Reduce normal energy slightly (e.g., by 15%)
 
     return {
       time: new Date(d.timestamp).toLocaleTimeString([], {
