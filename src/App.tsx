@@ -4,6 +4,7 @@ import { DataProvider } from "./contexts/DataContext";
 import { Login } from "./pages/Login";
 import { ConsumerDashboard } from "./pages/consumer/Dashboard";
 import { ConsumerCertificates } from "./pages/consumer/Certificates";
+import { AdminCertificateManagement } from "./pages/admin/Certificates";
 import { ConsumerWallet } from "./pages/consumer/Wallet";
 import { ConsumerAnalytics } from "./pages/consumer/Analytics";
 import { GeneratorDashboard } from "./pages/generator/Dashboard";
@@ -129,6 +130,14 @@ function AppRoutes() {
         element={
           <PrivateRoute allowedRoles={["admin"]}>
             <AdminGenerators />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin/certificates"
+        element={
+          <PrivateRoute allowedRoles={["admin"]}>
+            <AdminCertificateManagement />
           </PrivateRoute>
         }
       />

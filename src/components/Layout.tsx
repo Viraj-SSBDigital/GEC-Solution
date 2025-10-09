@@ -87,6 +87,11 @@ export const Layout = ({ children }: LayoutProps) => {
           { icon: Activity, label: "Ledger", path: "/admin/ledger" },
           { icon: BarChart3, label: "Reports", path: "/admin/reports" },
           {
+            icon: FileText,
+            label: "Certificates",
+            path: "/admin/certificates",
+          },
+          {
             icon: Settings,
             label: "Token Assignment Config",
             path: "/admin/token-assignment",

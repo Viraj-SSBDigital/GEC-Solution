@@ -68,7 +68,6 @@ export const ConsumerDashboard = () => {
     };
   });
 
-  const totalGreen = consumptionChartData.reduce((sum, d) => sum + d.green, 0);
   const totalNormal = consumptionChartData.reduce(
     (sum, d) => sum + d.normal,
     0

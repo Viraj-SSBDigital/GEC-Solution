@@ -65,6 +65,14 @@ export const AdminDashboard = () => {
       capacity: gen.capacity,
     };
   });
+  const greenVsConsumptionData = energyData.slice(-24).map((d) => ({
+    time: new Date(d.timestamp).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+    greenAvailable: d.greenGeneration, // total green generated
+    consumption: d.consumption, // total system consumption
+  }));
 
   const isDark = theme === "dark";
 
@@ -190,6 +198,45 @@ export const AdminDashboard = () => {
                 strokeWidth={2}
                 strokeDasharray="4 4"
                 name="Normal Energy"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </Card>
+        <Card>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-slate-200 mb-4">
+            Green Energy Availability vs Consumption (24h)
+          </h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={greenVsConsumptionData}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+              <XAxis dataKey="time" stroke={axisStroke} />
+              <YAxis stroke={axisStroke} />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: tooltipBg,
+                  border: `1px solid ${tooltipBorder}`,
+                  borderRadius: "8px",
+                  color: tooltipText,
+                }}
+              />
+              <Legend />
+
+              {/* Green Energy Line */}
+              <Line
+                type="monotone"
+                dataKey="greenAvailable"
+                stroke="#10b981"
+                strokeWidth={2}
+                name="Available Green Energy"
+              />
+
+              {/* Consumption Line */}
+              <Line
+                type="monotone"
+                dataKey="consumption"
+                stroke="#3b82f6"
+                strokeWidth={2}
+                name="Total Consumption"
               />
             </LineChart>
           </ResponsiveContainer>
