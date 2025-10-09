@@ -17,6 +17,7 @@ import { ThemeProvider } from "./theme/ThemeProvider";
 import TokenAssignmentConfig from "./pages/admin/TokenAssignmentConfig";
 import TokenLogsAdmin from "./pages/admin/TokenLogs";
 import Integrations from "./pages/admin/Integration";
+import { ConsumerBillingDashboard } from "./pages/consumer/Billing";
 
 const PrivateRoute = ({
   children,
@@ -78,6 +79,14 @@ function AppRoutes() {
         element={
           <PrivateRoute allowedRoles={["consumer"]}>
             <ConsumerAnalytics />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/consumer/billing"
+        element={
+          <PrivateRoute allowedRoles={["consumer"]}>
+            <ConsumerBillingDashboard />
           </PrivateRoute>
         }
       />

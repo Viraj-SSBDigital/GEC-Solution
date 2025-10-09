@@ -1,7 +1,14 @@
 import { useData } from "../../contexts/DataContext";
 import { Layout } from "../../components/Layout";
 import { StatCard, Card } from "../../components/Card";
-import { Activity, Award, Users, TrendingUp } from "lucide-react";
+import {
+  Activity,
+  Award,
+  Users,
+  TrendingUp,
+  ZapOff,
+  Battery,
+} from "lucide-react";
 import {
   LineChart,
   Line,
@@ -23,6 +30,15 @@ export const AdminDashboard = () => {
   const { theme } = useTheme();
 
   const totalGenerated = tokens.reduce((sum, t) => sum + t.units, 0);
+  const totalDelivered = allocationLogs.reduce(
+    (sum, log) => sum + (log.units || 0),
+    0
+  );
+
+  const energyLoss = totalGenerated - totalDelivered;
+  const lossPercentage =
+    totalGenerated > 0 ? (energyLoss / totalGenerated) * 100 : 0;
+
   const totalAllocated = tokens
     .filter((t) => t.status === "allocated")
     .reduce((sum, t) => sum + t.units, 0);
@@ -37,6 +53,7 @@ export const AdminDashboard = () => {
     generation: d.generation,
     consumption: d.consumption,
     green: d.greenGeneration,
+    normal: Math.max(d.generation - d.greenGeneration, 0), // Prevent negative values
   }));
 
   const generatorPerformance = generators.map((gen) => {
@@ -66,8 +83,7 @@ export const AdminDashboard = () => {
             System Overview
           </h1>
           <p className="text-gray-600 dark:text-slate-400">
-            Monitor and manage the Green Energy Certificate 
-Solution ecosystem
+            Monitor and manage the Green Energy Certificate Solution ecosystem
           </p>
         </div>
 
@@ -101,6 +117,22 @@ Solution ecosystem
             trend={{ value: 6.3, positive: true }}
             color="amber"
           />
+          <StatCard
+            icon={<Battery className="w-8 h-8" />}
+            label="Total Delivered"
+            value={formatEnergy(totalDelivered)}
+            trend={{ value: 3.2, positive: true }}
+            color="violet"
+          />
+          <StatCard
+            icon={<ZapOff className="w-8 h-8" />}
+            label="Transmission Loss"
+            value={`${formatEnergy(energyLoss)} (${lossPercentage.toFixed(
+              1
+            )}%)`}
+            trend={{ value: lossPercentage, positive: lossPercentage < 5 }}
+            color="rose"
+          />
         </div>
 
         {/* System Energy Flow Chart */}
@@ -122,13 +154,17 @@ Solution ecosystem
                 }}
               />
               <Legend />
+
+              {/* Generation Line */}
               <Line
                 type="monotone"
                 dataKey="generation"
                 stroke="#3b82f6"
                 strokeWidth={2}
-                name="Generation"
+                name="Total Generation"
               />
+
+              {/* Consumption Line */}
               <Line
                 type="monotone"
                 dataKey="consumption"
@@ -136,12 +172,24 @@ Solution ecosystem
                 strokeWidth={2}
                 name="Consumption"
               />
+
+              {/* Green Energy Line */}
               <Line
                 type="monotone"
                 dataKey="green"
                 stroke="#10b981"
                 strokeWidth={2}
                 name="Green Energy"
+              />
+
+              {/* Normal Energy Line */}
+              <Line
+                type="monotone"
+                dataKey="normal"
+                stroke="#ef4444"
+                strokeWidth={2}
+                strokeDasharray="4 4"
+                name="Normal Energy"
               />
             </LineChart>
           </ResponsiveContainer>

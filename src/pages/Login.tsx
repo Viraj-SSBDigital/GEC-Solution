@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
-import { Zap, Lock, Mail } from "lucide-react";
+import { Lock, Mail } from "lucide-react";
 import { motion } from "framer-motion";
 import { UserRole } from "../types";
+import logo from "../assets/SSBD.png";
 
 export const Login = () => {
   const [email, setEmail] = useState("");
@@ -28,17 +29,17 @@ export const Login = () => {
     {
       email: "consumer@example.com",
       role: "consumer" as UserRole,
-      name: "Consumer Demo",
+      name: "Consumer",
     },
     {
       email: "generator@example.com",
       role: "generator" as UserRole,
-      name: "Generator Demo",
+      name: "Generator",
     },
     {
       email: "admin@example.com",
       role: "admin" as UserRole,
-      name: "Admin Demo",
+      name: "Admin",
     },
   ];
 
@@ -59,16 +60,15 @@ export const Login = () => {
         className="w-full max-w-md"
       >
         {/* Logo & Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 flex flex-col justify-center items-center">
+          <img width={200} src={logo} />
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center justify-center space-x-3 mb-4"
           >
-            <Zap className="w-12 h-12 text-emerald-500 dark:text-emerald-400" />
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-              Green Energy Certificate 
-Solution
+              Green Energy Certificate Solution
             </h1>
           </motion.div>
           <p className="text-gray-600 dark:text-gray-400">

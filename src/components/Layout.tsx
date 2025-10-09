@@ -2,8 +2,8 @@ import { ReactNode, useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../theme/ThemeProvider";
+import logo from "../assets/SSBD.png";
 import {
-  Zap,
   LogOut,
   Home,
   FileText,
@@ -16,6 +16,7 @@ import {
   Menu,
   X,
   Layers,
+  BarChart,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -67,6 +68,7 @@ export const Layout = ({ children }: LayoutProps) => {
           },
           { icon: Activity, label: "Wallet", path: "/consumer/wallet" },
           { icon: BarChart3, label: "Analytics", path: "/consumer/analytics" },
+          { icon: BarChart, label: "Billing", path: "/consumer/billing" },
         ];
       case "generator":
         return [
@@ -108,16 +110,16 @@ export const Layout = ({ children }: LayoutProps) => {
     <div className="flex flex-col bg-gradient-to-br from-slate-100 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors">
       {/* Navbar */}
       <nav className="border-b border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 backdrop-blur-xl flex-shrink-0">
-        <div className="mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-2 sm:px-3 lg:px-3">
           <div className="flex h-fit items-center justify-between p-3">
             {/* Logo */}
             <div className="flex items-center space-x-4">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="flex items-center space-x-2 flex-shrink-0"
+                className="flex items-center space-x-2 flex-shrink-0 flex-col"
               >
-                <Zap className="w-8 h-8 text-emerald-500" />
+                <img src={logo} width={100} />
                 <span className="text-xl font-bold text-slate-900 dark:text-white">
                   Green Energy Certificate Solution
                 </span>

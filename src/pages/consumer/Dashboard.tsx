@@ -54,21 +54,39 @@ export const ConsumerDashboard = () => {
     );
     const greenEnergy = hourTokens.reduce((sum, t) => sum + t.units, 0);
 
+    // Normal energy = total consumption - green energy (not less than 0)
+    const normalEnergy = Math.max(d.consumption - greenEnergy, 0);
+
     return {
       time: new Date(d.timestamp).toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
       }),
       green: greenEnergy,
-      consumption: d.consumption, // user's actual consumption
+      normal: normalEnergy,
+      consumption: d.consumption, // total
     };
   });
 
-  const pieData = energyMix.map((item) => ({
-    name: item.source,
-    value: item.units,
-    color: getSourceColor(item.source),
-  }));
+  const totalGreen = consumptionChartData.reduce((sum, d) => sum + d.green, 0);
+  const totalNormal = consumptionChartData.reduce(
+    (sum, d) => sum + d.normal,
+    0
+  );
+
+  // Prepare pie data (merge renewable sources + Normal Energy)
+  const pieData = [
+    ...energyMix.map((item) => ({
+      name: item.source,
+      value: item.units,
+      color: getSourceColor(item.source),
+    })),
+    {
+      name: "Normal Energy",
+      value: totalNormal,
+      color: "#f59e0b", // amber/orange for conventional energy
+    },
+  ];
 
   // ======= Energy Mix Config =======
   const [customEnergyMixEnabled, setCustomEnergyMixEnabled] = useState(false);
@@ -97,6 +115,14 @@ export const ConsumerDashboard = () => {
             trend={{ value: 12.5, positive: true }}
             color="emerald"
           />
+          <StatCard
+            icon={<Zap className="w-8 h-8" />}
+            label="Normal Energy Used"
+            value={formatEnergy(totalNormal)}
+            trend={{ value: 0, positive: true }}
+            color="cyan"
+          />
+
           <StatCard
             icon={<Award className="w-8 h-8" />}
             label="Certificates"
@@ -184,12 +210,13 @@ export const ConsumerDashboard = () => {
                   labelStyle={{ color: "#94a3b8" }}
                 />
                 <Legend wrapperStyle={{ color: "#fff" }} />
+
                 <Line
                   type="monotone"
                   dataKey="consumption"
                   stroke="#3b82f6"
                   strokeWidth={2}
-                  name="Consumption"
+                  name="Total Consumption"
                 />
                 <Line
                   type="monotone"
@@ -197,6 +224,13 @@ export const ConsumerDashboard = () => {
                   stroke="#10b981"
                   strokeWidth={2}
                   name="Green Energy"
+                />
+                <Line
+                  type="monotone"
+                  dataKey="normal"
+                  stroke="#f59e0b"
+                  strokeWidth={2}
+                  name="Normal Energy"
                 />
               </LineChart>
             </ResponsiveContainer>
