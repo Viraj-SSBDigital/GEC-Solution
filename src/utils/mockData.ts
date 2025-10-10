@@ -117,7 +117,6 @@ export const generateMockTokens = (count: number = 50): GreenToken[] => {
   );
 };
 
-
 export const generateMockCertificates = (tokens: GreenToken[]): GreenEnergyCertificate[] => {
   const certificates: GreenEnergyCertificate[] = [];
   const allocatedTokens = tokens.filter(t => t.status === 'allocated' && t.consumerId);
@@ -177,7 +176,6 @@ export const generateMockEnergyData = (days: number = 7): EnergyData[] => {
 
   return data;
 };
-
 
 export const generateMockAllocationLogs = (tokens: GreenToken[]): AllocationLog[] => {
   const logs: AllocationLog[] = [];
